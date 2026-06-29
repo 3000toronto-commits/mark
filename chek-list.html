@@ -1,0 +1,560 @@
+<!-- Библиотеки для скачивания PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  .fd-marking-checklist {
+    --fd-main: #77408C;
+    --fd-light: #EDE0F3;
+    --fd-white: #ffffff;
+    --fd-text: #24182B;
+    --fd-muted: #706177;
+    --fd-border: rgba(119, 64, 140, 0.18);
+    --fd-shadow: 0 18px 45px rgba(69, 35, 84, 0.16);
+
+    box-sizing: border-box;
+    max-width: 920px;
+    margin: 32px auto;
+    padding: 0;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    color: var(--fd-text);
+  }
+
+  .fd-marking-checklist *,
+  .fd-marking-checklist *::before,
+  .fd-marking-checklist *::after {
+    box-sizing: border-box;
+  }
+
+  .fd-marking-checklist__inner {
+    background: linear-gradient(135deg, #EDE0F3 0%, #F8F2FB 100%);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--fd-shadow);
+    border: 1px solid rgba(119, 64, 140, 0.12);
+  }
+
+  .fd-marking-checklist__pdf-area {
+    background: linear-gradient(135deg, #EDE0F3 0%, #F8F2FB 100%);
+    border-radius: 24px;
+    padding: 0;
+  }
+
+  .fd-marking-checklist__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 22px;
+  }
+
+  .fd-marking-checklist__title-block {
+    max-width: 640px;
+  }
+
+  .fd-marking-checklist__label {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(119, 64, 140, 0.1);
+    color: var(--fd-main);
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .fd-marking-checklist__title {
+    margin: 0;
+    color: var(--fd-main);
+    font-size: 36px;
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .fd-marking-checklist__subtitle {
+    margin: 12px 0 0;
+    color: var(--fd-muted);
+    font-size: 17px;
+    line-height: 1.45;
+  }
+
+  .fd-marking-checklist__progress {
+    flex: 0 0 auto;
+    min-width: 150px;
+    padding: 14px 18px;
+    background: var(--fd-white);
+    border: 1px solid var(--fd-border);
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(69, 35, 84, 0.08);
+  }
+
+  .fd-marking-checklist__progress-label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--fd-muted);
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .fd-marking-checklist__progress-count {
+    display: block;
+    color: var(--fd-main);
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 800;
+  }
+
+  .fd-marking-checklist__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .fd-marking-checklist__tab {
+    appearance: none;
+    border: 1px solid var(--fd-main);
+    background: var(--fd-main);
+    color: var(--fd-white);
+    border-radius: 999px;
+    padding: 10px 18px;
+    font: inherit;
+    font-size: 15px;
+    line-height: 1.2;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .fd-marking-checklist__tab--active {
+    background: var(--fd-main);
+    color: var(--fd-white);
+  }
+
+  .fd-marking-checklist__panel {
+    display: none;
+  }
+
+  .fd-marking-checklist__panel--active {
+    display: block;
+  }
+
+  .fd-marking-checklist__card {
+    background: var(--fd-white);
+    border-radius: 24px;
+    padding: 26px;
+    border: 1px solid var(--fd-border);
+    box-shadow: 0 10px 28px rgba(69, 35, 84, 0.08);
+  }
+
+  .fd-marking-checklist__card-title {
+    margin: 0 0 18px;
+    color: var(--fd-text);
+    font-size: 22px;
+    line-height: 1.25;
+    font-weight: 800;
+  }
+
+  .fd-marking-checklist__item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    min-height: 56px;
+    margin: 0 0 12px;
+    padding: 16px 18px;
+    background: #FBF8FD;
+    border: 1px solid rgba(119, 64, 140, 0.13);
+    border-radius: 18px;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  }
+
+  .fd-marking-checklist__item:last-child {
+    margin-bottom: 0;
+  }
+
+  .fd-marking-checklist__item:hover {
+    background: #F5EDF9;
+    border-color: rgba(119, 64, 140, 0.32);
+  }
+
+  .fd-marking-checklist__checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .fd-marking-checklist__box {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    margin-top: 1px;
+    border: 2px solid var(--fd-main);
+    border-radius: 8px;
+    background: var(--fd-white);
+    position: relative;
+    transition: background 0.18s ease, border-color 0.18s ease;
+  }
+
+  .fd-marking-checklist__checkbox:checked + .fd-marking-checklist__box {
+    background: var(--fd-main);
+    border-color: var(--fd-main);
+  }
+
+  .fd-marking-checklist__checkbox:checked + .fd-marking-checklist__box::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 3px;
+    width: 8px;
+    height: 14px;
+    border: solid var(--fd-white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .fd-marking-checklist__checkbox:focus-visible + .fd-marking-checklist__box {
+    outline: 4px solid rgba(119, 64, 140, 0.22);
+    outline-offset: 3px;
+  }
+
+  .fd-marking-checklist__text {
+    display: block;
+    color: var(--fd-text);
+    font-size: 17px;
+    line-height: 1.45;
+    font-weight: 500;
+  }
+
+  .fd-marking-checklist__checkbox:checked ~ .fd-marking-checklist__text {
+    color: var(--fd-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(119, 64, 140, 0.55);
+  }
+
+  .fd-marking-checklist__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .fd-marking-checklist__button {
+    appearance: none;
+    border-radius: 16px;
+    padding: 14px 22px;
+    font: inherit;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .fd-marking-checklist__button:hover {
+    transform: translateY(-1px);
+  }
+
+  .fd-marking-checklist__button--primary {
+    border: 1px solid var(--fd-main);
+    background: var(--fd-main);
+    color: var(--fd-white);
+    box-shadow: 0 10px 22px rgba(119, 64, 140, 0.26);
+  }
+
+  .fd-marking-checklist__button--secondary {
+    border: 1px solid rgba(119, 64, 140, 0.3);
+    background: var(--fd-white);
+    color: var(--fd-main);
+  }
+
+  @media (max-width: 640px) {
+    .fd-marking-checklist {
+      margin: 24px 0;
+    }
+
+    .fd-marking-checklist__inner {
+      padding: 18px;
+      border-radius: 22px;
+    }
+
+    .fd-marking-checklist__header {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .fd-marking-checklist__title {
+      font-size: 29px;
+    }
+
+    .fd-marking-checklist__subtitle {
+      font-size: 15px;
+    }
+
+    .fd-marking-checklist__progress {
+      width: 100%;
+    }
+
+    .fd-marking-checklist__card {
+      padding: 18px;
+      border-radius: 20px;
+    }
+
+    .fd-marking-checklist__card-title {
+      font-size: 20px;
+    }
+
+    .fd-marking-checklist__item {
+      padding: 14px;
+      border-radius: 16px;
+    }
+
+    .fd-marking-checklist__text {
+      font-size: 15px;
+    }
+
+    .fd-marking-checklist__actions {
+      flex-direction: column;
+    }
+
+    .fd-marking-checklist__button {
+      width: 100%;
+    }
+  }
+
+  @media print {
+    .fd-marking-checklist {
+      max-width: none;
+      margin: 0;
+      box-shadow: none;
+    }
+
+    .fd-marking-checklist__inner {
+      box-shadow: none;
+      background: #ffffff;
+      border: none;
+    }
+
+    .fd-marking-checklist__tabs,
+    .fd-marking-checklist__actions {
+      display: none;
+    }
+
+    .fd-marking-checklist__card {
+      box-shadow: none;
+    }
+  }
+</style>
+
+<section class="fd-marking-checklist" data-fd-marking-checklist>
+  <div class="fd-marking-checklist__inner">
+    <div class="fd-marking-checklist__pdf-area" data-fd-pdf-area>
+      <div class="fd-marking-checklist__header">
+        <div class="fd-marking-checklist__title-block">
+          <div class="fd-marking-checklist__label">Интерактивный чек-лист</div>
+          <h2 class="fd-marking-checklist__title">Проверка НСИ</h2>
+          <p class="fd-marking-checklist__subtitle">
+            Отметьте пункты, которые уже проверили, и скачайте заполненный чек-лист в PDF.
+          </p>
+        </div>
+
+        <div class="fd-marking-checklist__progress" aria-live="polite">
+          <span class="fd-marking-checklist__progress-label">Выполнено</span>
+          <span class="fd-marking-checklist__progress-count">
+            <span class="fd-marking-checklist__done">0</span> из <span class="fd-marking-checklist__total">6</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="fd-marking-checklist__tabs" role="tablist" aria-label="Разделы чек-листа">
+        <button
+          class="fd-marking-checklist__tab fd-marking-checklist__tab--active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="fd-marking-checklist-panel-nsi"
+          id="fd-marking-checklist-tab-nsi"
+          data-fd-tab="nsi"
+        >
+          Проверка НСИ
+        </button>
+      </div>
+
+      <div
+        class="fd-marking-checklist__panel fd-marking-checklist__panel--active"
+        role="tabpanel"
+        id="fd-marking-checklist-panel-nsi"
+        aria-labelledby="fd-marking-checklist-tab-nsi"
+        data-fd-panel="nsi"
+      >
+        <div class="fd-marking-checklist__card">
+          <h3 class="fd-marking-checklist__card-title">Что проверить</h3>
+
+          <label class="fd-marking-checklist__item">
+            <input class="fd-marking-checklist__checkbox" type="checkbox">
+            <span class="fd-marking-checklist__box" aria-hidden="true"></span>
+            <span class="fd-marking-checklist__text">
+              В справочнике номенклатуры заведена позиция «Код маркировки», если компания учитывает коды как отдельную номенклатуру.
+            </span>
+          </label>
+
+          <label class="fd-marking-checklist__item">
+            <input class="fd-marking-checklist__checkbox" type="checkbox">
+            <span class="fd-marking-checklist__box" aria-hidden="true"></span>
+            <span class="fd-marking-checklist__text">
+              В карточках товаров корректно указаны упаковки.
+            </span>
+          </label>
+
+          <label class="fd-marking-checklist__item">
+            <input class="fd-marking-checklist__checkbox" type="checkbox">
+            <span class="fd-marking-checklist__box" aria-hidden="true"></span>
+            <span class="fd-marking-checklist__text">
+              Если компания использует агрегацию, то настроены все уровни упаковок: потребительская упаковка, ящики, тарные места, паллеты.
+            </span>
+          </label>
+
+          <label class="fd-marking-checklist__item">
+            <input class="fd-marking-checklist__checkbox" type="checkbox">
+            <span class="fd-marking-checklist__box" aria-hidden="true"></span>
+            <span class="fd-marking-checklist__text">
+              Созданы новые ресурсные спецификации, если компания относит стоимость кодов на каждую единицу продукции.
+            </span>
+          </label>
+
+          <label class="fd-marking-checklist__item">
+            <input class="fd-marking-checklist__checkbox" type="checkbox">
+            <span class="fd-marking-checklist__box" aria-hidden="true"></span>
+            <span class="fd-marking-checklist__text">
+              Заполнены штрихкоды упаковок.
+            </span>
+          </label>
+
+          <label class="fd-marking-checklist__item">
+            <input class="fd-marking-checklist__checkbox" type="checkbox">
+            <span class="fd-marking-checklist__box" aria-hidden="true"></span>
+            <span class="fd-marking-checklist__text">
+              Данные внесены в национальный каталог.
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="fd-marking-checklist__actions">
+      <button class="fd-marking-checklist__button fd-marking-checklist__button--secondary" type="button" data-fd-reset>
+        Сбросить отметки
+      </button>
+      <button class="fd-marking-checklist__button fd-marking-checklist__button--primary" type="button" data-fd-download>
+        Скачать PDF
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const blocks = document.querySelectorAll('[data-fd-marking-checklist]');
+    if (!blocks.length) return;
+
+    blocks.forEach(function (block) {
+      const tabs = block.querySelectorAll('[data-fd-tab]');
+      const panels = block.querySelectorAll('[data-fd-panel]');
+      const checkboxes = block.querySelectorAll('.fd-marking-checklist__checkbox');
+      const doneNode = block.querySelector('.fd-marking-checklist__done');
+      const totalNode = block.querySelector('.fd-marking-checklist__total');
+      const resetButton = block.querySelector('[data-fd-reset]');
+      const downloadButton = block.querySelector('[data-fd-download]');
+      const pdfArea = block.querySelector('[data-fd-pdf-area]');
+
+      function updateProgress() {
+        const total = checkboxes.length;
+        const done = Array.from(checkboxes).filter(function (checkbox) {
+          return checkbox.checked;
+        }).length;
+
+        if (doneNode) doneNode.textContent = done;
+        if (totalNode) totalNode.textContent = total;
+      }
+
+      function activateTab(tabName) {
+        tabs.forEach(function (tab) {
+          const isActive = tab.dataset.fdTab === tabName;
+          tab.classList.toggle('fd-marking-checklist__tab--active', isActive);
+          tab.setAttribute('aria-selected', String(isActive));
+        });
+
+        panels.forEach(function (panel) {
+          const isActive = panel.dataset.fdPanel === tabName;
+          panel.classList.toggle('fd-marking-checklist__panel--active', isActive);
+        });
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          activateTab(tab.dataset.fdTab);
+        });
+      });
+
+      checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', updateProgress);
+      });
+
+      if (resetButton) {
+        resetButton.addEventListener('click', function () {
+          checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+          });
+          updateProgress();
+        });
+      }
+
+      if (downloadButton) {
+        downloadButton.addEventListener('click', function () {
+          if (window.html2canvas && window.jspdf && window.jspdf.jsPDF && pdfArea) {
+            html2canvas(pdfArea, {
+              scale: 2,
+              backgroundColor: '#ffffff'
+            }).then(function (canvas) {
+              const imgData = canvas.toDataURL('image/png');
+              const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const pageHeight = pdf.internal.pageSize.getHeight();
+              const margin = 12;
+              const imgWidth = pageWidth - margin * 2;
+              const imgHeight = canvas.height * imgWidth / canvas.width;
+
+              let heightLeft = imgHeight;
+              let position = margin;
+
+              pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight - margin * 2;
+
+              while (heightLeft > 0) {
+                pdf.addPage();
+                position = heightLeft - imgHeight + margin;
+                pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight - margin * 2;
+              }
+
+              pdf.save('checklist-proverka-nsi.pdf');
+            });
+          } else {
+            window.print();
+          }
+        });
+      }
+
+      updateProgress();
+    });
+  })();
+</script>
