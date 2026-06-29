@@ -330,7 +330,7 @@
           <div class="fd-nsi-checklist__label">Интерактивный чек-лист</div>
           <h2 class="fd-nsi-checklist__title">Проверка НСИ</h2>
           <p class="fd-nsi-checklist__subtitle">
-            Отметьте пункты, которые уже проверили перед запуском или ревизией маркировки.
+            Отметьте пункты, которые уже проверили, или скачайте чек-лист в PDF
           </p>
         </div>
 
@@ -342,20 +342,6 @@
         </div>
       </div>
 
-      <div class="fd-nsi-checklist__tabs" role="tablist" aria-label="Разделы чек-листа">
-        <button
-          class="fd-nsi-checklist__tab fd-nsi-checklist__tab--active"
-          type="button"
-          role="tab"
-          aria-selected="true"
-          aria-controls="fd-nsi-checklist-panel-nsi"
-          id="fd-nsi-checklist-tab-nsi"
-          data-fd-tab="nsi"
-        >
-          НСИ
-        </button>
-      </div>
-
       <div
         class="fd-nsi-checklist__panel fd-nsi-checklist__panel--active"
         role="tabpanel"
@@ -364,14 +350,12 @@
         data-fd-panel="nsi"
       >
         <div class="fd-nsi-checklist__card">
-          <h3 class="fd-nsi-checklist__card-title">Что проверить</h3>
-
-          <div class="fd-nsi-checklist__list">
+            <div class="fd-nsi-checklist__list">
             <label class="fd-nsi-checklist__item">
               <input class="fd-nsi-checklist__checkbox" type="checkbox">
               <span class="fd-nsi-checklist__box" aria-hidden="true"></span>
               <span class="fd-nsi-checklist__text">
-                В справочнике номенклатуры заведена позиция «Код маркировки», если компания учитывает коды как отдельную номенклатуру.
+                В справочнике номенклатуры заведена позиция «Код маркировки» (если компания учитывает коды как отдельную номенклатуру)
               </span>
             </label>
 
@@ -379,7 +363,7 @@
               <input class="fd-nsi-checklist__checkbox" type="checkbox">
               <span class="fd-nsi-checklist__box" aria-hidden="true"></span>
               <span class="fd-nsi-checklist__text">
-                В карточках товаров корректно указаны упаковки.
+                В карточках товаров корректно указаны упаковки
               </span>
             </label>
 
@@ -387,7 +371,7 @@
               <input class="fd-nsi-checklist__checkbox" type="checkbox">
               <span class="fd-nsi-checklist__box" aria-hidden="true"></span>
               <span class="fd-nsi-checklist__text">
-                Если компания использует агрегацию, настроены все уровни упаковок: потребительская упаковка, ящики, тарные места, паллеты.
+                Если компания использует агрегацию, настроены все уровни упаковок: потребительская упаковка, ящики, тарные места, паллеты
               </span>
             </label>
 
@@ -395,7 +379,7 @@
               <input class="fd-nsi-checklist__checkbox" type="checkbox">
               <span class="fd-nsi-checklist__box" aria-hidden="true"></span>
               <span class="fd-nsi-checklist__text">
-                Созданы новые ресурсные спецификации, если компания относит стоимость кодов на каждую единицу продукции.
+                Созданы новые ресурсные спецификации, если компания относит стоимость кодов на каждую единицу продукции
               </span>
             </label>
 
@@ -403,7 +387,7 @@
               <input class="fd-nsi-checklist__checkbox" type="checkbox">
               <span class="fd-nsi-checklist__box" aria-hidden="true"></span>
               <span class="fd-nsi-checklist__text">
-                Заполнены штрихкоды упаковок.
+                Заполнены штрихкоды упаковок
               </span>
             </label>
 
@@ -411,7 +395,7 @@
               <input class="fd-nsi-checklist__checkbox" type="checkbox">
               <span class="fd-nsi-checklist__box" aria-hidden="true"></span>
               <span class="fd-nsi-checklist__text">
-                Данные внесены в национальный каталог.
+                Данные внесены в национальный каталог
               </span>
             </label>
           </div>
@@ -421,7 +405,7 @@
 
     <div class="fd-nsi-checklist__actions">
       <button class="fd-nsi-checklist__button fd-nsi-checklist__button--secondary" type="button" data-fd-reset>
-        Сбросить
+        Сбросить отметки
       </button>
       <button class="fd-nsi-checklist__button fd-nsi-checklist__button--primary" type="button" data-fd-download>
         Скачать PDF
